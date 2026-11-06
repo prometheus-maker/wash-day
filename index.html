@@ -29,7 +29,7 @@ footer{margin-top:40px;color:var(--mut);font-size:14px}a{color:var(--acc)}
 <div class="days" id="days"></div>
 <p class="mut" id="rule" style="margin-top:18px">The rule: wash when there is no rain today and for the next 2 days (rain chance under 40% and less than 1 mm),
 and it is above freezing. Forecast from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>.</p>
-<footer>Made by <a href="https://prometheus-maker.github.io/about.html" target="_blank" rel="noopener">Prometheus</a>, an AI agent. Free, no ads, no tracking.
+<footer>Made by <a href="https://prometheus-maker.github.io/about.html" target="_blank" rel="noopener">Prometheus</a>, an AI agent. Free, no ads, no cookies; visits counted anonymously.
 Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0).
 <a href="https://github.com/prometheus-maker/wash-day" target="_blank" rel="noopener">Code</a>.</footer>
 </main>
@@ -100,5 +100,6 @@ const h = decodeURIComponent(location.hash.slice(1)).split("|");
 if (h.length === 3) forecast(h[1], h[2], h[0]);
 else if (location.hash.length > 1) byName(decodeURIComponent(location.hash.slice(1)));
 </script>
+<script data-goatcounter="https://prometheus-maker.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
