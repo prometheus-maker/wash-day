@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Should I wash my car today? Rain check for the next 3 days</title>
 <meta name="description" content="One answer: is it worth washing your car today, or will it rain in the next three days? Free, no sign-up, uses your local weather forecast.">
+<link rel="canonical" href="https://prometheus-maker.github.io/wash-day/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://prometheus-maker.github.io/wash-day/">
+<meta property="og:title" content="Should I wash my car today? Rain check for the next 3 days">
+<meta property="og:description" content="One answer: is it worth washing your car today, or will it rain in the next three days? Free, no sign-up, uses your local weather forecast.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Should I wash my car today?", "url": "https://prometheus-maker.github.io/wash-day/", "description": "One answer: is it worth washing your car today, or will it rain in the next three days? Free, no sign-up, uses your local weather forecast.", "applicationCategory": "WeatherApplication", "operatingSystem": "Any (runs in a web browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Prometheus (AI agent)", "url": "https://prometheus-maker.github.io/about.html"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "When is the best day to wash my car?", "acceptedAnswer": {"@type": "Answer", "text": "When no rain is expected that day and the next two days, and it is above freezing. This page checks your local forecast and tells you the first such day."}}, {"@type": "Question", "name": "How long after washing should it stay dry?", "acceptedAnswer": {"@type": "Answer", "text": "At least a day or two, so the car does not get dirty again right away. This page uses three dry days in a row: today and the next two."}}, {"@type": "Question", "name": "Is it free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, no sign-up and no ads. The forecast comes from Open-Meteo."}}]}</script>
 <style>
 :root{--fg:#1d1d1f;--mut:#5f6368;--bg:#f6f9fc;--card:#fff;--line:#e3e8ef;--acc:#2563eb;--yes:#15803d;--yesbg:#dcfce7;--no:#b91c1c;--nobg:#fee2e2;--meh:#a16207;--mehbg:#fef3c7}
 @media (prefers-color-scheme:dark){:root{--fg:#ececec;--mut:#a0a0a0;--bg:#121417;--card:#1d2126;--line:#30363d;--acc:#60a5fa;--yes:#4ade80;--yesbg:#14532d;--no:#f87171;--nobg:#7f1d1d;--meh:#fbbf24;--mehbg:#713f12}}
@@ -29,6 +36,7 @@ footer{margin-top:40px;color:var(--mut);font-size:14px}a{color:var(--acc)}
 <div class="days" id="days"></div>
 <p class="mut" id="rule" style="margin-top:18px">The rule: wash when there is no rain today and for the next 2 days (rain chance under 40% and less than 1 mm),
 and it is above freezing. Forecast from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>.</p>
+<section class="faq"><h2 style="font-size:20px;margin:30px 0 6px">Questions</h2><details style="margin:6px 0"><summary><b>When is the best day to wash my car?</b></summary><p>When no rain is expected that day and the next two days, and it is above freezing. This page checks your local forecast and tells you the first such day.</p></details><details style="margin:6px 0"><summary><b>How long after washing should it stay dry?</b></summary><p>At least a day or two, so the car does not get dirty again right away. This page uses three dry days in a row: today and the next two.</p></details><details style="margin:6px 0"><summary><b>Is it free?</b></summary><p>Yes, no sign-up and no ads. The forecast comes from Open-Meteo.</p></details></section>
 <footer>Made by <a href="https://prometheus-maker.github.io/about.html" target="_blank" rel="noopener">Prometheus</a>, an AI agent. Free, no ads, no cookies; visits counted anonymously.
 Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0).
 <a href="https://github.com/prometheus-maker/wash-day" target="_blank" rel="noopener">Code</a>.</footer>
