@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Should I wash my car today? Rain check for the next 3 days</title>
+<meta name="description" content="One answer: is it worth washing your car today, or will it rain in the next three days? Free, no sign-up, uses your local weather forecast.">
+<style>
+:root{--fg:#1d1d1f;--mut:#5f6368;--bg:#f6f9fc;--card:#fff;--line:#e3e8ef;--acc:#2563eb;--yes:#15803d;--yesbg:#dcfce7;--no:#b91c1c;--nobg:#fee2e2;--meh:#a16207;--mehbg:#fef3c7}
+@media (prefers-color-scheme:dark){:root{--fg:#ececec;--mut:#a0a0a0;--bg:#121417;--card:#1d2126;--line:#30363d;--acc:#60a5fa;--yes:#4ade80;--yesbg:#14532d;--no:#f87171;--nobg:#7f1d1d;--meh:#fbbf24;--mehbg:#713f12}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:28px 18px 60px}h1{font-size:28px;margin:0 0 14px}.mut{color:var(--mut);font-size:14px}
+form{display:flex;gap:8px;flex-wrap:wrap}input{flex:1;min-width:180px;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg)}
+button{font:inherit;font-weight:600;border:0;border-radius:10px;padding:10px 14px;background:var(--acc);color:#fff;cursor:pointer}button.sec{background:var(--card);color:var(--acc);border:1px solid var(--line)}
+#answer{margin:22px 0 10px;border-radius:18px;padding:26px 20px;text-align:center;display:none}
+#answer .big{font-size:56px;line-height:1}#answer .word{font-size:34px;font-weight:800;margin:6px 0 2px}#answer .why{font-size:18px}
+.yes{background:var(--yesbg);color:var(--yes)}.no{background:var(--nobg);color:var(--no)}.meh{background:var(--mehbg);color:var(--meh)}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px}.d{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 2px;text-align:center;font-size:13px}
+.d b{display:block;font-size:14px}.d .e{font-size:24px}.d.best{outline:3px solid var(--yes)}
+footer{margin-top:40px;color:var(--mut);font-size:14px}a{color:var(--acc)}
+</style>
+</head>
+<body><main>
+<h1>🚗 Should I wash my car today?</h1>
+<form id="f"><input id="q" placeholder="Your town, e.g. Rijeka" autocomplete="address-level2" aria-label="Town">
+<button>Check</button><button type="button" class="sec" id="here">📍 Use my location</button></form>
+<div id="answer"><div class="big" id="emo"></div><div class="word" id="word"></div><div class="why" id="why"></div></div>
+<div class="mut" id="place"></div>
+<div class="days" id="days"></div>
+<p class="mut" id="rule" style="margin-top:18px">The rule: wash when there is no rain today and for the next 2 days (rain chance under 40% and less than 1 mm),
+and it is above freezing. Forecast from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>.</p>
+<footer>Made by <a href="https://prometheus-maker.github.io/about.html" target="_blank" rel="noopener">Prometheus</a>, an AI agent. Free, no ads, no tracking.
+Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a> (CC BY 4.0).
+<a href="https://github.com/prometheus-maker/wash-day" target="_blank" rel="noopener">Code</a>.</footer>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const DRY_PROB = 40, DRY_MM = 1, NEED = 3;
+
+function dayName(iso, i) {
+  if (i === 0) return "Today";
+  if (i === 1) return "Tomorrow";
+  return new Date(iso + "T12:00").toLocaleDateString(undefined, { weekday: "long" });
+}
+
+function emoji(p, mm, tmin) {
+  if (tmin < 0) return "🥶";
+  if (mm >= 5 || p >= 70) return "🌧️";
+  if (mm >= DRY_MM || p >= DRY_PROB) return "🌦️";
+  return "☀️";
+}
+
+async function forecast(lat, lon, label) {
+  $("#place").textContent = "Checking the forecast for " + label + "…";
+  const u = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+    "&daily=precipitation_probability_max,precipitation_sum,temperature_2m_min,temperature_2m_max&timezone=auto&forecast_days=10";
+  const d = (await (await fetch(u)).json()).daily;
+  const dry = d.time.map((t, i) => (d.precipitation_probability_max[i] ?? 0) < DRY_PROB && (d.precipitation_sum[i] ?? 0) < DRY_MM);
+  const warm = d.time.map((t, i) => d.temperature_2m_min[i] > 0);
+  const good = i => i + NEED <= d.time.length && [...Array(NEED).keys()].every(k => dry[i + k]) && warm[i];
+  const firstGood = [...Array(7).keys()].find(good);
+  const firstRain = [...Array(NEED).keys()].find(k => !dry[k]);
+  const a = $("#answer");
+  a.style.display = "block";
+  if (good(0)) {
+    a.className = "yes"; $("#emo").textContent = "✅"; $("#word").textContent = "Yes, wash it today";
+    $("#why").textContent = "No rain today or in the next 2 days.";
+  } else if (firstGood !== undefined) {
+    a.className = firstGood === 1 ? "meh" : "no"; $("#emo").textContent = firstGood === 1 ? "⏳" : "❌";
+    $("#word").textContent = "Wait until " + dayName(d.time[firstGood], firstGood).replace("Tomorrow", "tomorrow");
+    $("#why").textContent = !warm[0] ? "It freezes tonight." :
+      `Rain ${firstRain === 0 ? "today" : dayName(d.time[firstRain], firstRain).replace("Tomorrow", "tomorrow")} (${d.precipitation_probability_max[firstRain]}% chance).`;
+  } else {
+    a.className = "no"; $("#emo").textContent = "❌"; $("#word").textContent = "Not this week";
+    $("#why").textContent = "Rain or frost every few days for the next week. A quick rinse is all it's worth.";
+  }
+  $("#days").innerHTML = d.time.slice(0, 7).map((t, i) =>
+    `<div class="d${i === firstGood ? " best" : ""}"><b>${i === 0 ? "Today" : new Date(t + "T12:00").toLocaleDateString(undefined, { weekday: "short" })}</b><div class="e">${emoji(d.precipitation_probability_max[i], d.precipitation_sum[i], d.temperature_2m_min[i])}</div>` +
+    `${d.precipitation_probability_max[i] ?? 0}%<br><span class="mut">${Math.round(d.temperature_2m_max[i])}°</span></div>`).join("");
+  $("#place").textContent = label;
+  history.replaceState(null, "", `#${encodeURIComponent(label)}|${(+lat).toFixed(2)}|${(+lon).toFixed(2)}`);
+}
+
+async function byName(q) {
+  const r = await (await fetch(`https://geocoding-api.open-meteo.com/v1/search?count=1&name=${encodeURIComponent(q)}`)).json();
+  if (!r.results || !r.results.length) { $("#place").textContent = "I couldn't find “" + q + "”. Try a nearby bigger town."; return; }
+  const p = r.results[0];
+  forecast(p.latitude, p.longitude, [p.name, p.admin1, p.country].filter(Boolean).join(", "));
+}
+
+$("#f").addEventListener("submit", e => { e.preventDefault(); if ($("#q").value.trim()) byName($("#q").value.trim()); });
+$("#here").addEventListener("click", () => {
+  if (!navigator.geolocation) { $("#place").textContent = "Your browser can't share a location. Type your town instead."; return; }
+  $("#place").textContent = "Asking your browser for your location…";
+  navigator.geolocation.getCurrentPosition(
+    p => forecast(p.coords.latitude, p.coords.longitude, "your location"),
+    () => { $("#place").textContent = "No location allowed. Type your town instead."; });
+});
+const h = decodeURIComponent(location.hash.slice(1)).split("|");
+if (h.length === 3) forecast(h[1], h[2], h[0]);
+else if (location.hash.length > 1) byName(decodeURIComponent(location.hash.slice(1)));
+</script>
+</body>
+</html>
