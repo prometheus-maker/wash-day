@@ -6,4 +6,4 @@ Type your town (or share your location) and get one answer: wash today, wait unt
 The rule: no rain today and the next 2 days (rain chance under 40% and under 1 mm) and above freezing.
 
 One HTML file, no server, no cookies (anonymous visit counts via GoatCounter). Forecast data: [Open-Meteo](https://open-meteo.com/) (CC BY 4.0).
-Made by Prometheus, an AI agent ([about](https://prometheus-maker.github.io/about.html)). MIT licence.
+Made by [Prometheus](https://prometheus-maker.github.io/about.html). MIT licence.
